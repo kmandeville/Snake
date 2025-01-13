@@ -3,6 +3,7 @@ package me.kevinmandeville;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -20,6 +21,7 @@ public class Snake {
     private static final boolean SHOULD_WRAP = false;
     private final GameBoard gameBoard;
     private final Deque<Point> body;
+    private final HashSet<Point> bodyHashSet = new HashSet<>();
     private Direction currentDirection;
 
     public Snake(GameBoard gameBoard, int startX, int startY) {
@@ -39,7 +41,7 @@ public class Snake {
      */
     private void initializeSnake(int x, int y) {
         Point start = new Point(x, y);
-        body.add(start);
+        add(start);
         gameBoard.updateCell(start, Color.GREEN);
     }
 
@@ -62,19 +64,39 @@ public class Snake {
         };
 
         if (newHead.equals(fruitPosition)) {
-            body.addFirst(newHead);
+            add(newHead);
             gameBoard.updateCell(newHead, Color.GREEN);
             return true;
         } else if (isCollision(newHead)) {
             GameEngine.getInstance().quit();
             return false;
         } else {
-            body.addFirst(newHead);
-            Point tail = body.removeLast();
+            add(newHead);
+            Point tail = remove();
             gameBoard.updateCell(newHead, Color.GREEN);
             gameBoard.updateCell(tail, Color.BLACK);
             return false;
         }
+    }
+
+    /**
+     * Adds a new point to the snake's body and updates the internal hash set representing the snake's segments.
+     *
+     * @param point the point to be added to the snake's body, representing a new segment of the snake
+     */
+    private void add(Point point) {
+        body.addFirst(point);
+        bodyHashSet.add(point);
+    }
+
+    /**
+     * Removes the specified point from the snake's body segments and updates the corresponding internal structures to
+     * reflect the removal.
+     */
+    private Point remove() {
+        Point tail = body.removeLast();
+        bodyHashSet.remove(tail);
+        return tail;
     }
 
     /**
@@ -122,7 +144,7 @@ public class Snake {
         }
     }
 
-    public boolean contains(Object o) {
-        return body.contains(o);
+    public boolean contains(Point p) {
+        return bodyHashSet.contains(p);
     }
 }
