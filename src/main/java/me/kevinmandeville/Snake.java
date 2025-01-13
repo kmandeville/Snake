@@ -22,6 +22,7 @@ public class Snake {
     private final GameBoard gameBoard;
     private final Deque<Point> body;
     private final HashSet<Point> bodyHashSet = new HashSet<>();
+    private boolean started = false;
     private Direction currentDirection;
 
     public Snake(GameBoard gameBoard, int startX, int startY) {
@@ -55,6 +56,9 @@ public class Snake {
      * @return true if the snake's head reaches the fruit's position, indicating the snake has grown; false otherwise
      */
     public boolean move(Point fruitPosition) {
+        if (!started) {
+            return false; // Do not move if the game hasn't started
+        }
         Point head = body.getFirst();
         Point newHead = switch (currentDirection) {
             case UP -> new Point(head.x, wrapCoordinate(head.y - 1, gameBoard.getRows()));
@@ -120,6 +124,9 @@ public class Snake {
     public void setDirection(Direction newDirection) {
         if (!isOppositeDirection(newDirection)) {
             this.currentDirection = newDirection;
+            if (!started) {
+                start(); // Start the snake movement on the first direction press
+            }
         }
     }
 
@@ -146,5 +153,9 @@ public class Snake {
 
     public boolean contains(Point p) {
         return bodyHashSet.contains(p);
+    }
+
+    public void start() {
+        this.started = true;
     }
 }
