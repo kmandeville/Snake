@@ -1,7 +1,9 @@
 package me.kevinmandeville;
 
+import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * The Main class is the entry point for the application that initializes and displays the game board within a GUI
@@ -23,11 +25,15 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Game Board");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+            // Create the score panel
+            ScorePanel scorePanel = new ScorePanel();
+            frame.add(scorePanel, BorderLayout.NORTH); // Add the score panel to the top
 
             int rows = BOARD_SIZE; // Customize the grid size
             int cols = BOARD_SIZE;
-            GameBoard gameBoard = new GameBoard(rows, cols);
+            GameBoard gameBoard = new GameBoard(rows, cols, scorePanel);
             frame.add(gameBoard);
             frame.setSize(cols * 20, rows * 20); // Adjust window size based on the grid size
             frame.setVisible(true);

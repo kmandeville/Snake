@@ -15,6 +15,7 @@ public class GameEngine {
     private static final double TARGET_FPS = 12;
     private final Snake snake;
     private final Fruit fruit;
+    private final ScorePanel scorePanel; // Reference to the ScorePanel for score updates
     private boolean running;
 
     private static GameEngine instance;
@@ -22,12 +23,14 @@ public class GameEngine {
     /**
      * Constructs a GameEngine with the specified Snake and Fruit objects.
      *
-     * @param snake the Snake object representing the snake in the game
-     * @param fruit the Fruit object representing the fruit in the game
+     * @param snake      the Snake object representing the snake in the game
+     * @param fruit      the Fruit object representing the fruit in the game
+     * @param scorePanel Reference to scorePanle for updating
      */
-    private GameEngine(Snake snake, Fruit fruit) {
+    private GameEngine(Snake snake, Fruit fruit, ScorePanel scorePanel) {
         this.snake = snake;
         this.fruit = fruit;
+        this.scorePanel = scorePanel;
         this.running = true;
     }
 
@@ -35,13 +38,14 @@ public class GameEngine {
      * Retrieves or creates the singleton instance of the GameEngine. If the instance does not already exist, it is
      * initialized with the provided Snake and Fruit objects.
      *
-     * @param snake the Snake object representing the game's snake
-     * @param fruit the Fruit object representing the game's fruit
+     * @param snake      the Snake object representing the game's snake
+     * @param fruit      the Fruit object representing the game's fruit
+     * @param scorePanel Reference to scorePanle for updating
      * @return the singleton instance of the GameEngine
      */
-    public static GameEngine getInstance(Snake snake, Fruit fruit) {
+    public static GameEngine getInstance(Snake snake, Fruit fruit, ScorePanel scorePanel) {
         if (instance == null) {
-            initialize(snake, fruit);
+            initialize(snake, fruit, scorePanel);
         }
         return instance;
     }
@@ -65,11 +69,12 @@ public class GameEngine {
      * Initializes the GameEngine instance with the provided Snake and Fruit objects. This method creates a new
      * GameEngine object if one does not currently exist.
      *
-     * @param snake the Snake object representing the game's snake
-     * @param fruit the Fruit object representing the game's fruit
+     * @param snake      the Snake object representing the game's snake
+     * @param fruit      the Fruit object representing the game's fruit
+     * @param scorePanel Reference to scorePanle for updating
      */
-    private static void initialize(Snake snake, Fruit fruit) {
-        instance = new GameEngine(snake, fruit);
+    private static void initialize(Snake snake, Fruit fruit, ScorePanel scorePanel) {
+        instance = new GameEngine(snake, fruit, scorePanel);
     }
 
     /**
@@ -109,6 +114,7 @@ public class GameEngine {
         boolean ateFruit = snake.move(fruitPosition);
         if (ateFruit) {
             fruit.place();
+            scorePanel.incrementScore();
         }
     }
 

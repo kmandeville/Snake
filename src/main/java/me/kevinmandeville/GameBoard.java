@@ -20,10 +20,10 @@ public class GameBoard extends JPanel {
     private final int rows;
     private final int cols;
     private final JPanel[][] cells;
-    private final Snake snake;
-    private final Fruit fruit;
+    private final transient Snake snake;
+    private final transient Fruit fruit;
 
-    public GameBoard(int rows, int cols) {
+    public GameBoard(int rows, int cols, ScorePanel scorePanel) {
         this.rows = rows;
         this.cols = cols;
         this.cells = new JPanel[rows][cols];
@@ -36,9 +36,16 @@ public class GameBoard extends JPanel {
         setLayout(new GridLayout(rows, cols));
         setFocusable(true);
         addKeyListener(new SnakeDirectionListener(snake));
-        GameEngine.getInstance(snake, fruit).start();
+        GameEngine.getInstance(snake, fruit, scorePanel).start();
     }
 
+    /**
+     * Initializes the game board by creating a grid of JPanel cells. Each cell is individually instantiated, assigned a
+     * black background, and a dark gray border. The cells are then stored in a 2D array and added to the GameBoard
+     * panel to reflect the visual structure of the grid.
+     * <p>
+     * This method is typically called during the initialization of the GameBoard to prepare the board for gameplay.
+     */
     private void initializeBoard() {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
