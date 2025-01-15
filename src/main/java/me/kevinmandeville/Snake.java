@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
+import me.kevinmandeville.AudioEngine.Sounds;
 
 /**
  * Represents the Snake in a grid-based Snake game. A Snake object manages its position, movement, and interaction with
@@ -28,7 +29,7 @@ public class Snake {
     public Snake(GameBoard gameBoard, int startX, int startY) {
         this.gameBoard = gameBoard;
         this.body = new LinkedList<>();
-        this.currentDirection = Direction.LEFT;
+        this.currentDirection = null;
         initializeSnake(startX, startY);
     }
 
@@ -72,6 +73,15 @@ public class Snake {
             gameBoard.updateCell(newHead, Color.GREEN);
             return true;
         } else if (isCollision(newHead)) {
+            GameEngine.getInstance().playSound(Sounds.GAME_OVER);
+
+            // Wait 2 seconds for the sound to finish
+            try {
+                Thread.sleep(2000); // Check every 100 milliseconds
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             GameEngine.getInstance().quit();
             return false;
         } else {
