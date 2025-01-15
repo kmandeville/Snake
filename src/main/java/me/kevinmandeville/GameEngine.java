@@ -1,6 +1,8 @@
 package me.kevinmandeville;
 
 import java.awt.Point;
+import javax.sound.sampled.Clip;
+import me.kevinmandeville.AudioEngine.Sounds;
 
 /**
  * Represents the core game engine responsible for managing the main game loop. The GameEngine class handles updating
@@ -15,6 +17,7 @@ public class GameEngine {
     private static final double TARGET_FPS = 12;
     private final Snake snake;
     private final Fruit fruit;
+    private final AudioEngine audioEngine;
     private final ScorePanel scorePanel; // Reference to the ScorePanel for score updates
     private boolean running;
 
@@ -32,6 +35,23 @@ public class GameEngine {
         this.fruit = fruit;
         this.scorePanel = scorePanel;
         this.running = true;
+        this.audioEngine = new AudioEngine();
+
+        try {
+            audioEngine.loadSound(Sounds.SNAKE_EAT, "sounds/snake_eat.wav");
+            audioEngine.loadSound(Sounds.GAME_OVER, "sounds/game_over.wav");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Plays the specified sound effect within the game.
+     *
+     * @param sound The enum value from the Sounds enumeration that represents the sound to be played.
+     */
+    public Clip playSound(Sounds sound) {
+        return audioEngine.playSound(sound);
     }
 
     /**
@@ -95,7 +115,18 @@ public class GameEngine {
                 update();
                 sleep();
             }
+            cleanUpResources();
         }).start();
+    }
+
+    /**
+     * Cleans up resources used by the audio engine.
+     * <p>
+     * This method releases any resources held by the audio engine to ensure proper cleanup when the game loop
+     * terminates or the game is shutting down.
+     */
+    private void cleanUpResources() {
+        audioEngine.releaseResources();
     }
 
     /**
@@ -113,6 +144,7 @@ public class GameEngine {
         Point fruitPosition = fruit.getPosition();
         boolean ateFruit = snake.move(fruitPosition);
         if (ateFruit) {
+            audioEngine.playSound(Sounds.SNAKE_EAT);
             fruit.place();
             scorePanel.incrementScore();
         }

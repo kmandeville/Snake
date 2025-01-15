@@ -30,13 +30,19 @@ public class SnakeDirectionListener extends KeyAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> snake.setDirection(Direction.UP);
-            case KeyEvent.VK_DOWN -> snake.setDirection(Direction.DOWN);
-            case KeyEvent.VK_LEFT -> snake.setDirection(Direction.LEFT);
-            case KeyEvent.VK_RIGHT -> snake.setDirection(Direction.RIGHT);
-            default -> {
-            }
+        Direction direction = mapKeyCodeToDirection(e.getKeyCode());
+        if (direction != null) {
+            snake.setDirection(direction);
         }
+    }
+
+    private Direction mapKeyCodeToDirection(int keyCode) {
+        return switch (keyCode) {
+            case KeyEvent.VK_UP -> Direction.UP;
+            case KeyEvent.VK_DOWN -> Direction.DOWN;
+            case KeyEvent.VK_LEFT -> Direction.LEFT;
+            case KeyEvent.VK_RIGHT -> Direction.RIGHT;
+            default -> null;
+        };
     }
 }
